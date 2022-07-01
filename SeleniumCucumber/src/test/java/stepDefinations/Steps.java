@@ -1,22 +1,32 @@
 package stepDefinations;
 
-import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.AddCustomerPageObjects;
 import pageObjects.LoginPage;
+import pageObjects.SearchCustomerPageObjects;
 
 public class Steps extends Base {
 
+	Date d;
+	String fileName;
+	
+	@Before
+	public void setup()
+	{
+		d=new Date();
+		fileName=d.toGMTString().concat(".png");
+	}
 	
 	@Given("User launch chrome browser")
 	public void user_launch_chrome_browser() {
@@ -50,7 +60,7 @@ public class Steps extends Base {
 		// enters password
 		login.setTxtPassword(password);
 		
-		takeScreenshotOfPage(driver,".\\Screenshots\\Screenshot1.png");
+		//takeScreenshotOfPage(driver,".\\Screenshots\\"+"Demo"+fileName);
 
 	}
 
@@ -71,7 +81,7 @@ public class Steps extends Base {
 		} else
 			Assert.assertTrue(false);
 		
-		takeScreenshotOfPage(driver,".\\Screenshots\\Screenshot2.png");
+		//takeScreenshotOfPage(driver,".\\Screenshots\\"+"Demo"+fileName);
 
 	}
 
@@ -102,7 +112,7 @@ public class Steps extends Base {
 	@Then("Customers Dashboard should be displayed")
 	public void customers_dashboard_should_be_displayed() throws Exception {
 	    Assert.assertEquals("Customers / nopCommerce administration", addCust.getPageTitle());
-	    takeScreenshotOfPage(driver,".\\Screenshots\\Screenshot3.png");
+	    //takeScreenshotOfPage(driver,".\\Screenshots\\"+"Demo"+fileName);
 	}
 	
 	@When("User clicks on First Customers option")
@@ -145,6 +155,25 @@ public class Steps extends Base {
 	public void successful_message_should_be_displayed(String message) throws Exception {
 	    Assert.assertTrue(driver.findElement(By.tagName("body")).getText().contains("The new customer has been added successfully."));
 	    takeScreenshotOfPage(driver,".\\Screenshots\\Screenshot6.png");
+	}
+	
+	//search by email
+	
+	@When("User enters customer email")
+	public void user_enters_customer_email() {		
+		searchCust=new SearchCustomerPageObjects(driver);
+		searchCust.setEmailtoSearch("james_pan@nopCommerce.com");
+	}
+	@When("Click on search button")
+	public void click_on_search_button() {
+	    searchCust.clickButtonSearch();
+	}
+	
+	@Then("User should found email in the table")
+	public void user_should_found_email_in_the_table() {
+		boolean status=searchCust.searchCustomerByEmail("james_pan@nopCommerce.com");
+		Assert.assertEquals(true, status);
+		
 	}
 
 

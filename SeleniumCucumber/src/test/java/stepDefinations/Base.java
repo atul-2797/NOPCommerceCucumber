@@ -11,12 +11,16 @@ import org.openqa.selenium.WebDriver;
 
 import pageObjects.AddCustomerPageObjects;
 import pageObjects.LoginPage;
+import pageObjects.SearchCustomerPageObjects;
+import utilities.WaitHelper;
 
 public class Base {
 	
 	WebDriver driver;
 	LoginPage login;
 	AddCustomerPageObjects addCust;
+	SearchCustomerPageObjects searchCust;
+	WaitHelper waitHelper;
 	
 	public String genrateRandomString() {
 		String randomEmail= RandomStringUtils.randomAlphabetic(5);

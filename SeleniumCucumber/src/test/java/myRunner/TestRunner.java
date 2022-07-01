@@ -7,12 +7,11 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features="F:\\QA All\\EclipseAutomationTask\\SeleniumCucumber\\features\\Customers.feature",
+		features=".//features/",
 		glue="stepDefinations",
 		dryRun=false,		 
 		monochrome=true,
-		plugin={"pretty","html:target/html-output.html"}
-
+		plugin={"pretty","html:target/html-output.html"}	
 		)
 
 public class TestRunner {
