@@ -10,6 +10,7 @@ Background: Below are the common steps for each scenario
     And 	User clicks on First Customers option                                 
     Then  Customers Dashboard should be displayed  
 
+@Sanity
 Scenario: add new customer successfully with given details      
     When  User clicks on Add New button
     Then  Add a New Customer page should be displayed
@@ -17,7 +18,8 @@ Scenario: add new customer successfully with given details
     And   User clicks on Save button
     Then  Successful message "The new customer has been added successfully." should be displayed
     Then 	Close browser
-        
+       
+@Regression 
 Scenario: Search a customer by EmailID
     When  User enters customer email
     And   Click on search button

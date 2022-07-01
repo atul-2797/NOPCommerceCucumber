@@ -1,11 +1,15 @@
 package stepDefinations;
 
-import java.util.Date;
+import java.io.FileInputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -17,35 +21,62 @@ import pageObjects.LoginPage;
 import pageObjects.SearchCustomerPageObjects;
 
 public class Steps extends Base {
-
-	Date d;
-	String fileName;
 	
-	@Before
-	public void setup()
+	@Before()
+	public void setup() throws Exception
 	{
-		d=new Date();
-		fileName=d.toGMTString().concat(".png");
+		
+		logger=Logger.getLogger("NOPCommerce");  //added logger
+		PropertyConfigurator.configure("Log4J.properties");	
+		
+		configProps=new Properties();
+		FileInputStream propertiesFile=new FileInputStream("config.properties");
+		configProps.load(propertiesFile);
+		
+		String br=configProps.getProperty("browser");
+		if(br.equals("chrome")) {
+			// driver instance
+			logger.info("*****Chrome Driver instance created*******");
+			WebDriverManager.chromedriver().setup();
+			driver = new ChromeDriver();
+		}
+		else if(br.equals("firefox")) {
+			// driver instance
+			logger.info("*****Firefox Driver instance created*******");
+			WebDriverManager.firefoxdriver().setup();
+			driver = new FirefoxDriver();
+		}
+				
+		
+		// pass driver instance to LoginPage class
+		login = new LoginPage(driver);
+		
+		// pass driver instance to AddCustomerPageObjects class 
+		addCust=new AddCustomerPageObjects(driver);
+		
+		// pass driver instance to SearchCustomerPageObjects class 
+		searchCust=new SearchCustomerPageObjects(driver);
+				
 	}
 	
 	@Given("User launch chrome browser")
 	public void user_launch_chrome_browser() {
-
-		// driver instance
-		WebDriverManager.chromedriver().setup();
-		driver = new ChromeDriver();
-
-		// pass driver instance to LoginPage class
-		login = new LoginPage(driver);
-
+		
+		
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
 	}
 
 	@When("User opens url {string}")
 	public void user_opens_url(String url) throws Exception {
+		
+		
+		logger.info("*****Browser Opened*******");
+		
 		// open website
 		driver.get(url);
+		
+		logger.info("URL Is opened successfully");;
 		
 		// maximise browser window
 		driver.manage().window().maximize();
@@ -59,7 +90,7 @@ public class Steps extends Base {
 
 		// enters password
 		login.setTxtPassword(password);
-		
+		logger.info("****####****@@@@@*****&&&&&&&&");
 		//takeScreenshotOfPage(driver,".\\Screenshots\\"+"Demo"+fileName);
 
 	}
@@ -105,7 +136,7 @@ public class Steps extends Base {
 
 	@When("User clicks on Customers Menu")
 	public void user_clicks_on_customers_menu() {
-	    addCust=new AddCustomerPageObjects(driver);
+	    
 	    addCust.clickOnCustomerMenu();
 	}
 	
@@ -161,7 +192,7 @@ public class Steps extends Base {
 	
 	@When("User enters customer email")
 	public void user_enters_customer_email() {		
-		searchCust=new SearchCustomerPageObjects(driver);
+		
 		searchCust.setEmailtoSearch("james_pan@nopCommerce.com");
 	}
 	@When("Click on search button")
